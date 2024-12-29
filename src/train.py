@@ -41,6 +41,18 @@ class ReplayBuffer:
         return len(self.data)
 
 
+def update_running_stats(state, state_mean, state_var, count):
+    # Incrementally compute mean and variance
+    count += 1
+    new_mean = state_mean + (state - state_mean) / count
+    new_var = state_var + (state - state_mean) * (state - new_mean)
+    
+    return new_mean, new_var, count
+
+def normalize_state(state, state_mean, state_var, count):
+    return (state - state_mean) / (np.sqrt(state_var / count) + 1e-8)
+
+
 class ProjectAgent:
     def __init__(self, config=None, model=None):
         if config != None:
@@ -126,7 +138,10 @@ class ProjectAgent:
 
 
     def act(self, observation, use_random=False):
-        return greedy_action(self.model, observation)
+        state_mean, state_var, count = update_running_stats(observation, state_mean, state_var, count)
+        state = normalize_state(observation, state_mean, state_var, count)
+        action = greedy_action(self.model, state)
+        return action#greedy_action(self.model, observation)
 
     def save(self, path):
         filename = "model.pth"
@@ -135,5 +150,5 @@ class ProjectAgent:
 
 
     def load(self):
-        self.model.load_state_dict(torch.load("model.pth", map_location=torch.device('cpu')))
+        self.model.load_state_dict(torch.load("model_v1.pth", map_location=torch.device('cpu')))
 
