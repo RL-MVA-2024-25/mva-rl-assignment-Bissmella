@@ -78,6 +78,9 @@ class ProjectAgent:
                           nn.Linear(nb_neurons, nb_neurons),
                           nn.ReLU(), 
                           nn.Linear(nb_neurons, n_action))
+            self.state_mean = np.zeros(6)  # state_dim is the dimensionality of the state
+            self.state_var = np.ones(6)
+            self.count = 1e-5
     
     def gradient_step(self):
         if len(self.memory) > self.batch_size:
@@ -138,8 +141,8 @@ class ProjectAgent:
 
 
     def act(self, observation, use_random=False):
-        state_mean, state_var, count = update_running_stats(observation, state_mean, state_var, count)
-        state = normalize_state(observation, state_mean, state_var, count)
+        self.state_mean, self.state_var, self.count = update_running_stats(observation, self.state_mean, self.state_var, self.count)
+        state = normalize_state(observation, self.state_mean, self.state_var, self.count)
         action = greedy_action(self.model, state)
         return action#greedy_action(self.model, observation)
 
