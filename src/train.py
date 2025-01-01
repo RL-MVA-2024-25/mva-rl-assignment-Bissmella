@@ -72,11 +72,15 @@ class ProjectAgent:
         else:
             state_dim = env.observation_space.shape[0]
             n_action = env.action_space.n 
-            nb_neurons=24
+            nb_neurons=256
             self.model = torch.nn.Sequential(nn.Linear(state_dim, nb_neurons),
                           nn.ReLU(),
                           nn.Linear(nb_neurons, nb_neurons),
-                          nn.ReLU(), 
+                          nn.ReLU(),
+                          nn.Linear(nb_neurons, nb_neurons),
+                          nn.ReLU(),
+                          nn.Linear(nb_neurons, nb_neurons),
+                          nn.ReLU(),
                           nn.Linear(nb_neurons, n_action))
             self.state_mean = np.zeros(6)  # state_dim is the dimensionality of the state
             self.state_var = np.ones(6)
@@ -153,5 +157,5 @@ class ProjectAgent:
 
 
     def load(self):
-        self.model.load_state_dict(torch.load("model_v1.pth", map_location=torch.device('cpu')))
+        self.model.load_state_dict(torch.load("model_v2.pth", map_location=torch.device('cpu')))
 
