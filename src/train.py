@@ -72,7 +72,7 @@ class ProjectAgent:
         else:
             state_dim = env.observation_space.shape[0]
             n_action = env.action_space.n 
-            nb_neurons=256
+            nb_neurons=128
             self.model = torch.nn.Sequential(nn.Linear(state_dim, nb_neurons),
                           nn.ReLU(),
                           nn.Linear(nb_neurons, nb_neurons),
@@ -81,6 +81,11 @@ class ProjectAgent:
                           nn.ReLU(),
                           nn.Linear(nb_neurons, nb_neurons),
                           nn.ReLU(),
+                          nn.Linear(nb_neurons, nb_neurons),
+                          nn.ReLU(),
+                          nn.Linear(nb_neurons, nb_neurons),
+                          nn.ReLU(),
+                          nn.Dropout(p=0.3),
                           nn.Linear(nb_neurons, n_action))
             self.state_mean = np.zeros(6)  # state_dim is the dimensionality of the state
             self.state_var = np.ones(6)
@@ -145,17 +150,17 @@ class ProjectAgent:
 
 
     def act(self, observation, use_random=False):
-        self.state_mean, self.state_var, self.count = update_running_stats(observation, self.state_mean, self.state_var, self.count)
-        state = normalize_state(observation, self.state_mean, self.state_var, self.count)
-        action = greedy_action(self.model, state)
+        # self.state_mean, self.state_var, self.count = update_running_stats(observation, self.state_mean, self.state_var, self.count)
+        # state = normalize_state(observation, self.state_mean, self.state_var, self.count)
+        action = greedy_action(self.model, observation)
         return action#greedy_action(self.model, observation)
 
     def save(self, path):
-        filename = "model.pth"
+        filename = "my_model.pth"
         path = os.path.join(path, filename)
         torch.save(self.model.state_dict(), path)
 
 
     def load(self):
-        self.model.load_state_dict(torch.load("model_v2.pth", map_location=torch.device('cpu')))
+        self.model.load_state_dict(torch.load("my_model.pth", map_location=torch.device('cpu')))
 
