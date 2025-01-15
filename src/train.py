@@ -94,7 +94,6 @@ class ProjectAgent:
         self.epsilon_stop = config['epsilon_decay_period']
         self.epsilon_delay = config['epsilon_delay_decay']
         self.epsilon_step = (self.epsilon_max-self.epsilon_min)/self.epsilon_stop
-        self.model = model 
         self.criterion = torch.nn.MSELoss()
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=config['learning_rate'])
         if config == None:
