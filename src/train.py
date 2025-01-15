@@ -84,7 +84,7 @@ class ProjectAgent:
         self.state_var = np.ones(6)
         self.count = 1e-5
         if config != None:
-            device = "cuda" if next(model.parameters()).is_cuda else "cpu"
+            device = "cpu"#"cuda" if next(model.parameters()).is_cuda else "cpu"
             self.gamma = config['gamma']
             self.batch_size = config['batch_size']
             self.nb_actions = config['nb_actions']
