@@ -162,5 +162,5 @@ class ProjectAgent:
 
 
     def load(self):
-        self.model.load_state_dict(torch.load("my_model_64.pth", map_location=torch.device('cpu')))
+        self.model.load_state_dict(torch.load("my_model_n_128.pth", map_location=torch.device('cpu')))
 
