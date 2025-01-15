@@ -83,21 +83,21 @@ class ProjectAgent:
         self.state_mean = np.zeros(6)  # state_dim is the dimensionality of the state
         self.state_var = np.ones(6)
         self.count = 1e-5
-        if config != None:
-            device = "cpu"#"cuda" if next(model.parameters()).is_cuda else "cpu"
-            self.gamma = config['gamma']
-            self.batch_size = config['batch_size']
-            self.nb_actions = config['nb_actions']
-            self.memory = ReplayBuffer(config['buffer_size'], device)
-            self.epsilon_max = config['epsilon_max']
-            self.epsilon_min = config['epsilon_min']
-            self.epsilon_stop = config['epsilon_decay_period']
-            self.epsilon_delay = config['epsilon_delay_decay']
-            self.epsilon_step = (self.epsilon_max-self.epsilon_min)/self.epsilon_stop
-            self.model = model 
-            self.criterion = torch.nn.MSELoss()
-            self.optimizer = torch.optim.Adam(self.model.parameters(), lr=config['learning_rate'])
-        else:
+        # if config != None:
+        device = "cpu"#"cuda" if next(model.parameters()).is_cuda else "cpu"
+        self.gamma = config['gamma']
+        self.batch_size = config['batch_size']
+        self.nb_actions = config['nb_actions']
+        self.memory = ReplayBuffer(config['buffer_size'], device)
+        self.epsilon_max = config['epsilon_max']
+        self.epsilon_min = config['epsilon_min']
+        self.epsilon_stop = config['epsilon_decay_period']
+        self.epsilon_delay = config['epsilon_delay_decay']
+        self.epsilon_step = (self.epsilon_max-self.epsilon_min)/self.epsilon_stop
+        self.model = model 
+        self.criterion = torch.nn.MSELoss()
+        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=config['learning_rate'])
+        if config == None:
             state_dim = env.observation_space.shape[0]
             n_action = env.action_space.n 
             nb_neurons=128
