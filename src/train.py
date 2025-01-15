@@ -72,7 +72,7 @@ class ProjectAgent:
         else:
             state_dim = env.observation_space.shape[0]
             n_action = env.action_space.n 
-            nb_neurons=128
+            nb_neurons=64
             self.model = torch.nn.Sequential(nn.Linear(state_dim, nb_neurons),
                           nn.ReLU(),
                           nn.Linear(nb_neurons, nb_neurons),
@@ -162,5 +162,5 @@ class ProjectAgent:
 
 
     def load(self):
-        self.model.load_state_dict(torch.load("my_model.pth", map_location=torch.device('cpu')))
+        self.model.load_state_dict(torch.load("my_model_64.pth", map_location=torch.device('cpu')))
 
